@@ -3,11 +3,11 @@ import json
 from unittest import TestCase
 
 from zsl.application.containers.web_container import WebContainer
-from zsl.unittest.http import HttpTestCase
+from zsl.unittest.http import HTTPTestCase
 from zsl.unittest.zsl import ZslTestCase, ZslTestConfiguration
 
 
-class ToBeTestedTaskTestCase(ZslTestCase, HttpTestCase, TestCase):
+class ToBeTestedTaskTestCase(ZslTestCase, HTTPTestCase, TestCase):
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(app_name='time_tracker', container=WebContainer, version=None,
                                                   profile=None)
 
