@@ -1,10 +1,9 @@
 import http
-import json
 from unittest import TestCase
 
 from zsl.application.containers.web_container import WebContainer
-from zsl.unittest.http import HTTPTestCase
-from zsl.unittest.zsl import ZslTestCase, ZslTestConfiguration
+from zsl.testing.http import HTTPTestCase
+from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
 
 class ToBeTestedTaskTestCase(ZslTestCase, HTTPTestCase, TestCase):
