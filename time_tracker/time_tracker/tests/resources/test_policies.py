@@ -1,7 +1,11 @@
 from unittest import TestCase, mock
 
+from zsl import Zsl
+from zsl.application.containers.web_container import WebContainer
 from zsl.application.modules.alchemy_module import SessionHolder
 from zsl.resource.guard import Access
+
+from db.install import install
 
 from time_tracker.models.persistent import User
 from time_tracker.services.auth_service import AuthService
@@ -11,7 +15,8 @@ from time_tracker.resources.policies import MustBeAdminPolicy
 class TestMustBeAdminPolicy(TestCase):
 
     def setUp(self):
-        from time_tracker.time_tracker import app
+        app = Zsl(__name__, modules=WebContainer.modules())
+        install()
 
         self.orm = app.injector.get(SessionHolder)()
         self.auth_service: AuthService = app.injector.get(AuthService)

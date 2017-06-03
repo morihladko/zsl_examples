@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from zsl.db.model.app_model import ISO_8601_FORMAT
 
 from time_tracker.resources.admin_resource import AdminResource
 from time_tracker.models.persistent import TimeEntry
+
 
 def parse_date(date_str: str, fmt: str ='%Y-%m-%dT%H:%M:%S') -> datetime:
     if date_str.endswith('Z'):
