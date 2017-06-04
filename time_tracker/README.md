@@ -6,7 +6,7 @@ ZSL is a small library for creating modern server applications able to merge
 
 In this tutorial we will create a small time tracking application  with an API 
 endpoint and an admin interface with help of admin-on-rest. We will use 
-SQLAlchemy to define our persisent storage
+[SQLAlchemy](https://www.sqlalchemy.org/) to define our persistent storage.
 
 ### Installing ZSL  
 
@@ -168,6 +168,7 @@ $ mkdir time_tracker
 $ touch time_tacker/__init__.py
 ```
 
+We can put some useful information into our package `__init__` file. 
 
 ```python
 # time_tracker/__init__.py
@@ -175,3 +176,103 @@ app_name = 'time_tracker'
 
 __version__ = 1.0
 ```
+
+So after that we can add them into our `app.py`.
+
+```python
+# ./app.py
+from zsl import Zsl
+from zsl.application.containers.web_container import WebContainer
+
+import time_tracker
+
+app = Zsl(time_tracker.app_name,
+          version=time_tracker.__version__,
+          modules=WebContainer.modules())
+
+if __name__ == '__main__':
+    app.run_web()
+```
+
+## Models
+
+```bash
+$ mkdir time_tracker/models
+$ touch time_tracker/__init__.py
+```
+
+We keep it simple and we will use only two tables/models. A user table and a 
+time_entry table. 
+
+### Serializable models
+
+For handling data in application an ORM object like SQLAlchemy model is not always 
+desirable, so in ZSL we have [AppModel](https://zsl.readthedocs.io/en/latest/api.html#zsl-db-model-app-model),
+which can be used with SQLAlchemy models and automates their serialization.
+ 
+ ```python
+# time_tracker/serializable.py
+from zsl.db.model.app_model import AppModel
+                               
+                               
+class User(AppModel):          
+    pass                       
+  
+  
+class TimeEntry(AppModel):     
+    pass
+```
+
+### Persistent models
+
+With AppModels defined, we can now declare our User and TimeEntry models. We 
+will use ZSL [ModelBase](https://zsl.readthedocs.io/en/latest/api.html#zsl.db.model.raw_model.ModelBase)
+as our model base, as it will use our AppModels.
+
+To associate a DB model with app model we will use `__app_model__` class 
+property.
+
+```python
+# time_tracker/persistent.py
+from zsl.db.model.raw_model import ModelBase
+
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, DateTime, Text, ForeignKey, String
+from sqlalchemy.orm import relationship
+
+import time_tracker.models.serializable as app_models
+
+Base = declarative_base(cls=ModelBase)
+
+
+class User(Base):
+    __app_model__ = app_models.User
+
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    fullname = Column(String)
+    email = Column(String)
+
+
+class TimeEntry(Base):
+    __app_model__ = app_models.TimeEntry
+
+    __tablename__ = 'time_entry'
+
+    id = Column(Integer, primary_key=True)
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    what = Column(Text)
+    user_id = Column(Integer, ForeignKey(User.id))
+
+    user = relationship('User')
+```
+
+### Creating the DB
+
+## Creating a task
+
+Task are the primary endpoint in a ZSL application. It 
+
