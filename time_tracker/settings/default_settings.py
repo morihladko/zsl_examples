@@ -36,6 +36,8 @@ LOG = {
     }
 }
 
-ALLOW_ORIGIN = '*'
+CORS = {
+    'origin': '*'
+}
 
 SECRET = 'f228301eff5840e7b13dee95711b06c6'
