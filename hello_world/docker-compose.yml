@@ -1,0 +1,31 @@
+version: '2'
+services:
+  redis:
+    image: redis
+    environment:
+      SET_CONTAINER_TIMEZONE: 'True'
+      CONTAINER_TIMEZONE: Europe/Prague
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      SET_CONTAINER_TIMEZONE: 'True'
+      CONTAINER_TIMEZONE: Europe/Prague
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  
+  app:
+    build:
+      context: .
+    environment:
+      ZSL_SETTINGS: /app/settings/app_settings.cfg
+    image: atteqcom/zsl-hello-world
+    command: python app.py web run -h 0.0.0.0 -p 5555
+    ports:
+      - "5555:5555"
+
