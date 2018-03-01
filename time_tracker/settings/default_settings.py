@@ -1,5 +1,14 @@
-TASK_PACKAGES = ('time_tracker.tasks',)
+from zsl.router.task import TaskConfiguration
+
+TASKS = TaskConfiguration()\
+        .create_namespace('task')\
+            .add_packages(['time_tracker.tasks'])\
+            .get_configuration()\
+        .create_namespace('task/zsl')\
+            .add_packages(['zsl.tasks.zsl'])\
+            .get_configuration()
 RESOURCE_PACKAGES = ('time_tracker.resources.admin',)
+
 SERVICE_INJECTION = {
     'list': ['AuthService'],
     'package': 'time_tracker.services'
@@ -7,7 +16,6 @@ SERVICE_INJECTION = {
 
 DATABASE_URI = 'sqlite:///:memory:'
 DATABASE_ENGINE_PROPS = {'echo': True}
-SERVICE_INJECTION = ()
 REDIS = {
     'host': 'localhost',
     'port': 6379,
@@ -36,6 +44,8 @@ LOG = {
     }
 }
 
-ALLOW_ORIGIN = '*'
+CORS = {
+    'origin': '*'
+}
 
 SECRET = 'f228301eff5840e7b13dee95711b06c6'
